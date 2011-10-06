@@ -1,0 +1,19 @@
+<div id="icons"></div>
+<style type="text/css">
+	#icons { padding-left: 4px; max-width: 160px; }
+	#icons img { margin-right: 4px; width: 16px; height: 16px; }
+</style>
+<script type="text/javascript">
+chrome.tabs.getSelected(null, function(tab) {
+	var el = document.getElementById('icons');
+	var stuff = chrome.extension.getBackgroundPage().tabs[tab.id].slice(1);
+
+	for (var i = 0; i < stuff.length; i++) {
+		var icon = document.createElement('img');
+		icon.src = 'data/' + stuff[i].icon;
+		icon.title = stuff[i].name + ' (' + stuff[i].value + ')';
+		el.appendChild(icon);
+	}
+	el.style.width = (stuff.length * 20) + 'px';
+});
+</script>

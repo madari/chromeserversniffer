@@ -1,0 +1,10 @@
+{
+	"name": "Chrome Server Sniffer",
+	"description": "Chrome Server Sniffer tries to identify the underlying server platform.",
+	"version": "1.0",
+	"permissions": ["experimental", "tabs"],
+	"background_page": "background.html",
+	"page_action": {
+		"popup": "popup.html"
+	}
+}

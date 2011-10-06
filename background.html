@@ -1,0 +1,61 @@
+<html>
+<head>
+<script src="fingerprints.js" type="text/javascript"></script>
+<script type="text/javascript">
+var tabs = {};
+
+function updateIcon(id) {
+	if (tabs[id] && tabs[id].length) {
+		var tech = tabs[id][0];
+		chrome.pageAction.setIcon({tabId: id, path: 'data/' + tech.icon});
+		chrome.pageAction.setTitle({tabId: id, title: tech.name + " (" + tech.value + ")"});
+		chrome.pageAction.show(id);
+		var popup = tabs[id].length > 1 ? 'popup.html' : '';
+		chrome.pageAction.setPopup({tabId: id, popup: popup});
+	} else {
+		chrome.pageAction.hide(id);
+	}
+}
+
+chrome.tabs.onRemoved.addListener(function(id) {
+	delete tabs[id];
+});
+
+chrome.tabs.onSelectionChanged.addListener(function(id) {
+	updateIcon(id);
+});
+
+chrome.tabs.onUpdated.addListener(function(id, info) {
+	if (info.status == 'loading') {
+		updateIcon(id);
+	}
+});
+
+chrome.experimental.webRequest.onResponseStarted.addListener(function (details) {
+	var infos = [];
+	tabs[details.tabId] = infos;
+	for (var i = 0; i < details.responseHeaders.length; i++) {
+		var header = details.responseHeaders[i];
+		var ids = fingerprints[header.name.toLowerCase()] || [];
+	
+	items:
+		for (var o = 0; o < ids.length; o++) {
+			var s = ids[o];
+			for (var j = 0; j < s.tests.length; j++) {
+				if (s.tests[j].test(header.value)) {
+					var info = {key: header.name.toLowerCase(), name: s.name, icon: s.icon, value: header.value};
+					if (info.key == 'server') {
+						infos.unshift(info);
+					} else {
+						infos.push(info);
+					}
+					break items;
+				}
+			}
+		}
+	}
+}, {types: ['main_frame']}, ['responseHeaders']);
+</script>
+</head>
+<body></body>
+</html>
