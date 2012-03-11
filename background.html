@@ -31,13 +31,14 @@ chrome.tabs.onUpdated.addListener(function(id, info) {
 	}
 });
 
-chrome.experimental.webRequest.onResponseStarted.addListener(function (details) {
+chrome.webRequest.onResponseStarted.addListener(function(details) {
 	var infos = [];
 	tabs[details.tabId] = infos;
+
 	for (var i = 0; i < details.responseHeaders.length; i++) {
 		var header = details.responseHeaders[i];
 		var ids = fingerprint[header.name.toLowerCase()] || [];
-	
+
 	items:
 		for (var o = 0; o < ids.length; o++) {
 			var s = ids[o];
@@ -54,7 +55,7 @@ chrome.experimental.webRequest.onResponseStarted.addListener(function (details) 
 			}
 		}
 	}
-}, {types: ['main_frame']}, ['responseHeaders']);
+}, {urls: ['*://*/*'], types: ['main_frame']}, ['responseHeaders']);
 </script>
 </head>
 <body></body>
