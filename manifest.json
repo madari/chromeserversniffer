@@ -1,7 +1,12 @@
 {
-	"name": "Chrome Server Sniffer",
-	"description": "Chrome Server Sniffer tries to identify the underlying server platform.",
+	"name": "Server Sniffer",
+	"description": "The Server Sniffer tries to detect web server and framework information while you browse",
 	"version": "1.0",
+	"icons": {
+		"128": "icon_128.png",
+		"48": "icon_48.png"
+	},
+	"minimum_chrome_version": "17",
 	"permissions": ["tabs", "webRequest", "*://*/*"],
 	"background_page": "background.html",
 	"page_action": {
